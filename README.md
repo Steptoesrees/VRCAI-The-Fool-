@@ -15,17 +15,6 @@ This project creates an AI companion that can engage in natural conversations wi
 - **VRChat Integration**: Designed specifically for virtual reality social interactions
 - **Modular Architecture**: Clean separation of concerns with planned enhancements
 
-## 🏗️ Architecture
-
-The system follows a modular architecture with clear separation between input processing, intelligence layer, and output generation:
-
-```
-Input Layer → Processing Layer → Output Layer
-    ↓              ↓               ↓
-Speech-to-Text → LLM Interface → Text-to-Speech
-OSC Events    → Prompt Generator → OSC Commands
-Computer Vision → State Manager → VRChat API
-```
 
 ### Core Components
 
@@ -40,7 +29,7 @@ Computer Vision → State Manager → VRChat API
 ### Prerequisites
 
 - Python 3.9+
-- Audio input/output devices
+- Voicemeeter Banana
 - OpenRouter API key
 
 ### Setup
@@ -56,72 +45,35 @@ Computer Vision → State Manager → VRChat API
    pip install -r requirements.txt
    ```
 
-3. **Configure environment variables**
+3. **Install Voicemeeter Banana**
+    https://vb-audio.com/Voicemeeter/banana.htm
+
+4. **Configure environment variables**
    Create a `.env` file in the root directory:
    ```env
    OPENROUTER_API_KEY=your_api_key_here
    ```
 
-4. **Configure audio devices**
+5. **Configure audio devices**
+   Run Device_Helper.py (and follow the instructions)
+   or
    Edit [`Core/config/config.yaml`](Core/config/config.yaml:1) to set your audio input/output device indices:
-   ```yaml
-   audio:
-     input_device: 6    # Your microphone device index
-     output_device: 11  # Your speaker/headphone device index
-     volume: 1
-     length_scale: 1
-     noise_scale: 0
-     noise_w_scale: 0
-     normalize_audio: false
-   ```
+   
 
-5. **Download TTS model**
-   Place the Piper TTS model file (`glados_piper_medium.onnx`) in the `Models/` directory.
 
 ## 🎮 Usage
 
 ### Basic Operation
 
-1. **Start the application**:
+1. **Open VRCHAT**
+   (make sure you have the audio set up correctly)
+
+2. **Start the application**:
    ```bash
    python Core/Main.py
    ```
+he config file for different voice characteristics
 
-2. **Choose input method**:
-   - Type 'yes' for text-based input
-   - Press Enter for speech input (wait for "speak now" prompt)
-
-3. **Interact naturally**:
-   - Speak or type your messages
-   - The AI will respond with synthesized speech
-   - Type "exit chat" to end the conversation
-
-### Advanced Features
-
-- **Memory System**: The bot maintains conversation context and stores important memories in a vector database
-- **Custom Personalities**: Modify [`Core/config/vrchat_bot_prompt.md`](Core/config/vrchat_bot_prompt.md:1) to change the AI's personality and behavior
-- **Audio Configuration**: Adjust TTS parameters in the config file for different voice characteristics
-
-## 📁 Project Structure
-
-```
-tts stt ai/
-├── Core/
-│   ├── Main.py                 # Main application orchestrator
-│   ├── Speech_To_Text.py       # Real-time speech transcription
-│   ├── Text_To_Speech.py       # Voice synthesis with Piper TTS
-│   ├── Chat_Memory.py          # Short-term and vector memory systems
-│   ├── callLLM.py              # LLM integration via OpenRouter
-│   ├── Config_Manager.py       # Configuration management
-│   ├── Convo_Manager.py        # Conversation state tracking
-│   └── config/
-│       ├── config.yaml         # Audio and system settings
-│       └── vrchat_bot_prompt.md # AI personality and behavior
-├── Plans/                      # Architecture and roadmap documentation
-├── Models/                     # TTS model files (glados_piper_medium.onnx)
-├── Test/                       # Testing and experimentation scripts
-└── README.md                   # This file
-```
 
 ## 🔧 Configuration
 
@@ -148,45 +100,13 @@ Customize the bot's behavior in [`Core/config/vrchat_bot_prompt.md`](Core/config
 - Adjust communication style and interaction guidelines
 - Set VRChat-specific knowledge and social boundaries
 
-## 🚀 Development Roadmap
-
-### Current Implementation
-- ✅ Real-time speech-to-text and text-to-speech
-- ✅ Basic conversation flow with LLM integration  
-- ✅ Short-term memory management
-- ✅ Vector-based long-term memory storage
-- ✅ Configurable audio settings
-
-### Planned Enhancements
-See [`Plans/implementation_roadmap.md`](Plans/implementation_roadmap.md:1) for detailed development timeline:
-
-- **Phase 1**: Modular architecture and configuration system
-- **Phase 2**: OSC communication for VRChat integration
-- **Phase 3**: Advanced prompt generation and context awareness
-- **Phase 4**: Computer vision and enhanced interactions
-- **Phase 5**: Performance optimization and production readiness
-
-## 🐛 Troubleshooting
 
 ### Common Issues
-
-**Audio Device Problems**
-- Check device indices in Windows Sound settings
-- Verify `input_device` and `output_device` values in config.yaml
-- Ensure microphone permissions are granted
-
-**TTS Model Issues**
-- Confirm `glados_piper_medium.onnx` is in the Models/ directory
-- Check Piper voice model compatibility
 
 **API Connection Problems**
 - Verify OpenRouter API key in .env file
 - Check internet connectivity
 - Monitor API rate limits and quotas
-
-**Memory System Errors**
-- Ensure ChromaDB can create the `my_vectors` directory
-- Check disk space for vector storage
 
 ## 🤝 Contributing
 
@@ -198,12 +118,6 @@ This project is actively developed with a modular architecture approach. Contrib
 - VRChat OSC integration features
 - Performance optimizations
 
-Please refer to the architecture plans in the `Plans/` directory for implementation guidelines.
-
-## 📄 License
-
-This project is for educational and development purposes. Please ensure compliance with the terms of service for all integrated services (OpenRouter, VRChat, etc.).
-
 ## 🙏 Acknowledgments
 
 - **RealtimeSTT**: For real-time speech-to-text capabilities
@@ -211,7 +125,5 @@ This project is for educational and development purposes. Please ensure complian
 - **OpenRouter**: For LLM API access
 - **ChromaDB**: For vector memory storage
 - **VRChat Community**: For inspiration and use cases
-
+- **AIcom**: im getting half these ideas from this
 ---
-
-*For detailed technical specifications and development roadmap, see the documentation in the `Plans/` directory.*

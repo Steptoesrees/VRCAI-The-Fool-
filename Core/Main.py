@@ -20,14 +20,7 @@ class main():
         self.messages = self.memory.memory
         self.GLAD0S = TTS()
         self.recorder = recorder
-        if self.text == 'yes':
-            while True:
-                self.run(input("enter message"))
-
-        else:
-            while True:
-                
-                self.recorder.text(self.run)
+        self.recorder.text(self.run)
             
 
 
