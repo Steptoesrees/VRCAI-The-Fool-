@@ -56,9 +56,11 @@ This project creates an AI companion that can engage in natural conversations wi
    ```
 
 5. **Configure audio devices**
-   Run Device_Helper.py (and follow the instructions)
+   Run Device_Helper.py and follow the instructions
+
    or
-   Edit [`Core/config/config.yaml`](Core/config/config.yaml:1) to set your audio input/output device indices:
+
+   set up your own audio by editing [`Core/config/config.yaml`](Core/config/config.yaml:1) to set your audio input/output device indices:
    
 
 
@@ -67,7 +69,6 @@ This project creates an AI companion that can engage in natural conversations wi
 ### Basic Operation
 
 1. **Open VRCHAT**
-   (make sure you have the audio set up correctly)
 
 2. **Start the application**:
    Run Main.py
@@ -98,6 +99,16 @@ Customize the bot's behavior in [`Core/config/vrchat_bot_prompt.md`](Core/config
 - Adjust communication style and interaction guidelines
 - Set VRChat-specific knowledge and social boundaries
 
+### AI voice
+
+Customise the TTS voice by saving the voice .onnx and .json file in the Models folder
+in config set the TTS voice to the new voice file
+
+voices can be found here: 
+https://huggingface.co/rhasspy/piper-voices
+https://www.nexusmods.com/skyrimspecialedition/mods/98631?tab=files
+
+etc, there are loads on the internet
 
 ### Common Issues
 
