@@ -147,3 +147,5 @@ Models/
 realtimesst.log
 Test/
 Plans/
+.github/
+.kilocode/
