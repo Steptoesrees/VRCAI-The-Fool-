@@ -134,4 +134,9 @@ This project is actively developed with a modular architecture approach. Contrib
 - **ChromaDB**: For vector memory storage
 - **VRChat Community**: For inspiration and use cases
 - **AIcom**: im getting half these ideas from this
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
 ---
