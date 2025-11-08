@@ -1,0 +1,18 @@
+  File "C:\Users\leonh\AppData\Local\Python\pythoncore-3.13-64\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\leonh\AppData\Local\Python\pythoncore-3.13-64\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\leonh\OneDrive\Projects\TTS\The Fool\Core\Main.py", line 55, in run
+    self.TTS.readAloud(speech)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "c:\Users\leonh\OneDrive\Projects\TTS\The Fool\Core\Text_To_Speech.py", line 33, in readAloud
+    self.stream.start()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\leonh\OneDrive\Projects\TTS\The Fool\.venv\Lib\site-packages\sounddevice.py", line 1124, in start
+    _check(err, 'Error starting stream')
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\leonh\OneDrive\Projects\TTS\The Fool\.venv\Lib\site-packages\sounddevice.py", line 2804, in _check
+    raise PortAudioError(errormsg, err)
+sounddevice.PortAudioError: Error starting stream: Invalid stream pointer [PaErrorCode -9988]

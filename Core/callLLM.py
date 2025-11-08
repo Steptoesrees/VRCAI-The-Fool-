@@ -5,7 +5,7 @@ import os
 
 dotenv.load_dotenv()
 
-def call(chat_memory, max_tokens = 300, model = 'meta-llama/llama-3.2-1b-instruct'):
+def call(chat_memory, max_tokens = 300, model = 'openrouter/polaris-alpha', test = False):
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
@@ -19,13 +19,11 @@ def call(chat_memory, max_tokens = 300, model = 'meta-llama/llama-3.2-1b-instruc
         }))
     
     response = response.json()
-    print(response)
-    print("")
-    try:
-        print(response["choices"][0]["message"]["content"])
-    except:
-        print(response["error"])
-    print("")
+
+    if test:
+        print(response)
+        print("")
+
     
     return response["choices"][0]["message"]["content"]
 

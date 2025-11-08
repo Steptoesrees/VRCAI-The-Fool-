@@ -133,7 +133,7 @@ This project is actively developed with a modular architecture approach. Contrib
 - **OpenRouter**: For LLM API access
 - **ChromaDB**: For vector memory storage
 - **VRChat Community**: For inspiration and use cases
-- **AIcom**: im getting half these ideas from this
+- **AIcom**: I'm getting half these ideas from this
 
 
 ## License

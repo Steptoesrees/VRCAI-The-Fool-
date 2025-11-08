@@ -5,19 +5,19 @@ from Config_Manager import Config_Manager
 
 
 class TTS():
-    def __init__ (self,voice):
+    def __init__ (self,voice, convo_manager):
+        self.convo = convo_manager
         self.config = Config_Manager()
         self.voice = PiperVoice.load(voice)
         self.test_message = """Based on the error message, it seems like you're having trouble with the CUDA Execution Provider for ONNX Runtime, which is used by Piper. Here's how you can address the issue:"""
 
 
         self.isTalking = False
-        self.isTalking = False
         self.inConvo = False
         self.stopPhrases = ["shut up", "wait", "listen to me"]
 
     
-        self.stream = stream = sd.OutputStream(samplerate=self.voice.config.sample_rate, channels=1, dtype='int16', device=self.config.get('audio.output_device'))
+        
 
 
 
@@ -30,22 +30,14 @@ class TTS():
         )
 
     def readAloud(self, message):
+        self.stream = sd.OutputStream(samplerate=self.voice.config.sample_rate, channels=1, dtype='int16', device=self.config.get('audio.output_device'))
         self.stream.start()
-
-        self.isTalking = True
         
         for chunk in self.voice.synthesize(message):
             if self.isTalking == True:
                 int_data = np.frombuffer(chunk.audio_int16_bytes, dtype=np.int16)
                 self.stream.write(int_data)
-            else:
-                self.stream.stop()
-                self.stream.close()
-                return
 
-        self.stream.stop()
-        if self.isTalking == True:
-            self.toggle_talking()
         self.stream.close()
         return
 
@@ -57,7 +49,6 @@ class TTS():
             if i in phrase:
                 if self.isTalking == True:
                     self.toggle_talking()
-                    self.stream.stop()
                     self.stream.close()
                 return
         return
