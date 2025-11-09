@@ -8,3 +8,4 @@ audio:
   normalize_audio: false
   output_device: 20
   volume: 1
+

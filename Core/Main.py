@@ -1,11 +1,12 @@
 import callLLM as LLM
 from RealtimeSTT import AudioToTextRecorder
 from Text_To_Speech import TTS
-import onnxruntime as ort
 from Config_Manager import Config_Manager
 from Chat_Memory import short_memory
 from Convo_Manager import Convo_Manager
 from termcolor import colored as coloured
+
+
 
 
 class main():
@@ -21,7 +22,6 @@ class main():
         self.recorder = recorder
 
         while True:
-            print (self.TTS.isTalking)
             self.recorder.text(self.talk_to_ai)
             
 
@@ -31,62 +31,50 @@ class main():
 
 
     def talk_to_ai(self, text):
-        print(text)
+        
+        # QOL PRINTS INPUT TO SCREEN   
+        print(coloured(f"Is Talking Toggle: {self.convo.isTalking()}", 'cyan'))
+        print(coloured('='*30,'magenta'))
+        print(coloured(text,'green'))
+        print(coloured('='*30,'magenta'))
+        
+        if not self.convo.isTalking():
 
-        if self.TTS.isTalking == False:
-            print ('llm')
-
-            self.TTS.isTalking = True
+            self.convo.startTalking()
             self.memory.add_user_message(text)
             self.messages = self.memory.memory
 
+
             ai_response = LLM.call(self.messages)
             self.memory.add_ai_message(ai_response)
-
             speech = self.clean_text(ai_response)
 
+
+            # QOL PRINTS AI RESPONSE TO SCREEN
+            print("\n")
             print(coloured('='*30,'magenta'))
             print(coloured(speech,'red'))
             print(coloured('='*30,'magenta'))
 
+            # QOL PRINTS WHEN TTS STarts
             print('\n')
             print(coloured('tts start','green'))
+            
+
+
             self.TTS.readAloud(speech)
 
+            # QOL PRINTS WHEN TTS STOPS
             print('\n')
             print(coloured('tts end','green'))
             
+            self.convo.stopTalking()
 
-
-            
-            self.TTS.isTalking = False
         else:
-            print('interrupt')
-            self.TTS.stop_Phrase(text)
+            if self.convo.talkingInterrupt(text):
+                print(coloured('INTERRUPT TRIGGERED','yellow'))
+                return
 
-    def run(self, text):
-        self.TTS.isTalking = True
-        self.memory.add_user_message(text)
-
-        self.messages = self.memory.memory
-        print(text)
-
-        if "exit chat" in text.lower():
-            ai__response = LLM.call(self.messages, max_tokens=50)
-            speech = ai__response[0]
-            print(speech)
-            self.TTS.readAloud(speech)
-            quit()
-        
-        #ai_response = LLM.call(self.messages)
-        ai_response = 'test message'
-        self.memory.add_ai_message(ai_response)
-        
-        speech = ai_response
-        print(speech)
-        self.TTS.readAloud(speech)
-        self.TTS.isTalking = False
-        return
 
 if __name__ == '__main__':
     config = Config_Manager()

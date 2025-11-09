@@ -30,7 +30,7 @@ class Device_Helper():
 
     def Update_Audio_Device_Config(self):
         print('='*60)
-        print('downlaod voicemeeter Banana: https://vb-audio.com/Voicemeeter/banana.htm')
+        print('download voicemeeter Banana: https://vb-audio.com/Voicemeeter/banana.htm')
         print("Set VRCHAT mic to Voicemeeter B1")
         print("Set sound output device to Voicemeeter input")
         print("in voicemeeter, in virtual inputs, set voicemeeter input to B2")
@@ -58,6 +58,7 @@ class Device_Helper():
                 self.nvd = True
 
         print('='*60)
+        input("press enter key to exit")
 
 
 if __name__ == '__main__':

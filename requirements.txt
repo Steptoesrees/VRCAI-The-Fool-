@@ -1,0 +1,14 @@
+# Core runtime
+python-dotenv
+PyYAML
+requests
+termcolor
+
+# Audio / STT (RealtimeSTT dependency)
+RealtimeSTT
+
+# Text-to-Speech (Piper)
+piper-tts
+sounddevice
+numpy
+
