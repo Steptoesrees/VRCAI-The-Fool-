@@ -2,6 +2,7 @@
 #import chromadb
 import uuid
 from datetime import datetime
+import json
 
 # class vector_memory():
 #     def __init__(self, mem_name):
@@ -146,11 +147,25 @@ class short_memory():
         self.memory = [{'role': 'system', 'content': sys_prompt}]
         self.max_history = max_history
 
+
+    def save_memory(self):
+        json_data = self.memory
+        try:
+            with open("Core/Log/ChatLog.json", "w") as file:
+                file.write("")
+                file.seek(0)
+                json.dump(json_data, file, indent=4) #updates the file
+                
+        except:
+            print("failed to save log")
+        
+
     def add_user_message(self,message):
         self.memory.append({'role': 'user', 'content': message})
 
     def add_ai_message(self, message):
         self.memory.append({'role': 'assistant', 'content': message})
+        self.save_memory()
 
     def inject_memory(self, memory):
         self.memory.insert(len(self.memory)-2,{'role': 'system', 'content': memory})

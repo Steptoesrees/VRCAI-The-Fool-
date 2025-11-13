@@ -4,6 +4,9 @@ PyYAML
 requests
 termcolor
 
+#memory storage
+chromaDB
+
 # Audio / STT (RealtimeSTT dependency)
 RealtimeSTT
 

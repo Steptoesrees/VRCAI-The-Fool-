@@ -11,6 +11,7 @@ def call(chat_memory, max_tokens = 300, model = 'openrouter/polaris-alpha', test
         headers={
             "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
             
+            
         },
         data=json.dumps({
             "model": model, 

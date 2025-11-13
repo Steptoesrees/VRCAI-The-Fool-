@@ -5,7 +5,7 @@ yea as if, this ai readme is a bit wrong there, this is EXTREMELY EARLY IN DEVEL
 
 ## 🚀 Overview
 
-This project creates an AI companion that can engage in natural conversations within VRChat environments. The system combines real-time speech processing with large language models to create an immersive, interactive experience.
+This project creates an AI companion that can engage in natural conversations within VRChat environments. The system combines real-time speech processing with large language models to create an immersive, interactive experience. :3
 
 
 ### Core Components
@@ -129,7 +129,7 @@ This project is actively developed with a modular architecture approach. Contrib
 - **RealtimeSTT**: For real-time speech-to-text capabilities
 - **Piper TTS**: For high-quality text-to-speech synthesis
 - **OpenRouter**: For LLM API access
-- **ChromaDB**: For vector memory storage
+- **ChromaDB**: For vector memory storage 
 - **VRChat Community**: For inspiration and use cases
 - **AIcom**: I'm getting half these ideas from this
 

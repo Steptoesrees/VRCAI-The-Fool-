@@ -2,6 +2,7 @@ from piper import PiperVoice, SynthesisConfig
 import sounddevice as sd
 import numpy as np
 from Config_Manager import Config_Manager
+import subprocess
 
 
 class TTS():
@@ -40,9 +41,13 @@ class TTS():
         self.stream.stop()
         self.stream.close()
         return
+    
+if __name__ == '__main__':
+    subprocess.call(['espeak', 'Hello world'])
 
 
     
+
 
 
 

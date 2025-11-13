@@ -32,3 +32,4 @@ class Convo_Manager():
                 self.stopTalking()
                 return True
         return False
+    
