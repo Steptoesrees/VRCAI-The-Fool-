@@ -20,12 +20,12 @@ class main():
         self.messages = self.memory.memory
         self.TTS = TTS(self.config.get('TTS.voice'), self.convo)
         self.recorder = recorder
-
-        while True:
-            self.recorder.text(self.talk_to_ai)
-            
-
-
+        
+      
+    
+    def call(self):
+        self.recorder.text(self.talk_to_ai)
+    
     def clean_text(self,text):
         return text.replace("*","").replace("#","").replace("^","").replace("|","")
 
@@ -75,9 +75,9 @@ class main():
                 print(coloured('INTERRUPT TRIGGERED','yellow'))
                 return
 
-
 if __name__ == '__main__':
     config = Config_Manager()
     recorder = AudioToTextRecorder(input_device_index=config.get('audio.input_device'))
     main = main(recorder, config)
-    
+    while True:
+        main.call()

@@ -46,7 +46,7 @@ def install_requirements():
 
 def run_main():
     print("[run.py] Starting application with python -m Core.Main")
-    run([str(VENV_PY), "Core/Device_Helper.py"])
+    run([str(VENV_PY), "Core/Device_Helpre.py"])
 
 
 def main():

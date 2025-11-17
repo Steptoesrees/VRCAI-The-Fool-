@@ -1,10 +1,12 @@
+AI:
+  model: openrouter/sherlock-dash-alpha
 TTS:
   voice: Models//glados_piper_medium.onnx
 audio:
   input_device: 3
-  length_scale: 1
-  noise_scale: 0
-  noise_w_scale: 0
+  length_scale: 1.0
+  noise_scale: 0.0
+  noise_w_scale: 0.0
   normalize_audio: false
-  output_device: 20
-  volume: 1
+  output_device: 19
+  volume: 1.0
