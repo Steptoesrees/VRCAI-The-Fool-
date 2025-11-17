@@ -16,9 +16,9 @@ class UI(tk.Tk):
         super().__init__()
         self.title("The Fool TTS UI")
         self.geometry("900x700")
-
-        style = ttk.Style()
-        style.theme_use('clam')
+        
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
 
         self.config = Config_Manager()
         self.convoManager = Convo_Manager()
@@ -37,19 +37,21 @@ class UI(tk.Tk):
         self.main_frame = ttk.Frame(self.tabbook)
         self.vision_frame = ttk.Frame(self.tabbook)
         self.settings_frame = ttk.Frame(self.tabbook)
+        self.prompt_frame = ttk.Frame(self.tabbook)
         self.tabbook.add(self.main_frame, text='Main')
-        self.tabbook.add(self.vision_frame, text='Vision')
+        #self.tabbook.add(self.vision_frame, text='Vision')
         self.tabbook.add(self.settings_frame, text='Settings')
+        self.tabbook.add(self.prompt_frame, text='Personality')
         self.build_main_tab()
         self.build_vision_tab()
         self.build_settings_tab()
+        self.build_personality_tab()
         self.populate_devices()
+        self.load_config()
       
 
-
-
     def build_main_tab(self):
-        self.status_label = ttk.Label(self.main_frame, text="⚫ | Idle🔴", font=('Segoe UI', 16))
+        self.status_label = ttk.Label(self.main_frame, text="|Idle|", font=('Segoe UI', 16))
         self.status_label.pack(anchor='center', pady=(10, 5), padx=10)
 
         # Chat log frame
@@ -74,7 +76,7 @@ culpa qui officia deserunt mollit anim id est laborum."""
 
         self.chat_log.config(state=tk.NORMAL)
         self.chat_log.config(state=tk.DISABLED)
-        self.chat_log.pack(fill='both', expand='true')
+        self.chat_log.pack(fill='both', expand=True)
 
         self.add_message("Click 'Start listening' to start the AI", "System")
 
@@ -90,6 +92,7 @@ culpa qui officia deserunt mollit anim id est laborum."""
         temp_label = ttk.Label(self.vision_frame, text="PlaceHolder", font=('impact', 120))
         temp_label.pack(anchor='center', pady=(10, 5), padx=10)
 
+
     def build_settings_tab(self):
         
         """AI SETTINGS"""
@@ -97,17 +100,17 @@ culpa qui officia deserunt mollit anim id est laborum."""
         AI_frame.pack(fill='x', padx=10, pady=10)
 
         #creates the lables and input boxes for model and openrouter key
-        model_label = ttk.Label(AI_frame, text="Model", font=('Segoe UI', 10))
-        model_input = ttk.Entry(AI_frame, font=('Segoe UI', 12))
+        model_label = ttk.Label(AI_frame, text="Model url", font=('Segoe UI', 10))
+        self.model_input = ttk.Entry(AI_frame, font=('Segoe UI', 12))
         key_label = ttk.Label(AI_frame, text="Openrouter key", font=('Segoe UI', 10))
-        key_input = ttk.Entry(AI_frame, font=('Segoe UI', 12), show="*")
+        self.key_input = ttk.Entry(AI_frame, font=('Segoe UI', 12), show="*")
 
         #draws lables and input boxes
         model_label.pack(anchor='w', pady=(10, 0), padx=10)
-        model_input.pack(anchor='w', fill='x', pady=(0,5), padx=10)
+        self.model_input.pack(anchor='w', fill='x', pady=(0,5), padx=10)
         
         key_label.pack(anchor='w', pady=(10, 0), padx=10)
-        key_input.pack(anchor='w', fill='x', pady=(0,10), padx=10)
+        self.key_input.pack(anchor='w', fill='x', pady=(0,10), padx=10)
 
         """TTS SETTINGS"""
         TTS_frame = ttk.LabelFrame(self.settings_frame, text='TTS settings')
@@ -123,11 +126,6 @@ culpa qui officia deserunt mollit anim id est laborum."""
         output_label = ttk.Label(TTS_frame, text="Output Devices", font=('Segoe UI', 10))
         self.output_dropdown = ttk.Combobox(TTS_frame, state='readonly', width=32)
 
-        self.volume_var = 0
-        ttk.Label(TTS_frame, text='Volume:').pack(anchor='w')
-        self.volume_var = tk.DoubleVar(value=1.0)
-        self.volume_scale = ttk.Scale(TTS_frame, from_=0.0, to=2.0, orient='horizontal', variable=self.volume_var)
-
         #draws elements
         auto_button.pack(anchor='w', pady=10, padx=10)
 
@@ -137,7 +135,23 @@ culpa qui officia deserunt mollit anim id est laborum."""
         output_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.output_dropdown.pack(anchor='w', pady=(0,10), padx=10)
 
-        self.volume_scale.pack(fill='x', pady=(0, 10))
+        confirm_button = ttk.Button(self.settings_frame, text='Confirm', command=self.set_config).pack()
+
+
+    def build_personality_tab(self):
+        prompt_frame = ttk.Frame(self.settings_frame)
+        prompt_frame.pack(fill='both', expand=True, padx=5, pady=5)
+
+        self.prompt_entry = scrolledtext.ScrolledText(
+            self.prompt_frame, 
+            wrap=tk.WORD, 
+            height=10, 
+            font=('Segoe UI', 12)
+        )
+
+        self.prompt_entry.pack(fill='both', expand=True, padx=5,pady=5)
+
+        save_button = ttk.Button(self.prompt_frame, text='Confirm', command=self.set_prompt).pack()
 
 
     def populate_devices(self):
@@ -152,15 +166,45 @@ culpa qui officia deserunt mollit anim id est laborum."""
     def toggle_listen(self):
         if self.convoManager.isListening():
             self.listen_button.config(text='Start Listening')
-            self.status_label.config(text="⚫ | Idle")
+            self.status_label.config(text="|Idle|")
             self.convoManager.stopListening()
 
         else: 
             self.listen_button.config(text='Stop Listening')
-            self.status_label.config(text="🟡 | Listening")
+            self.status_label.config(text="|Listening|")
             self.convoManager.startListening()
 
+
+    def load_config(self):
+        model = self.config.get('AI.model')
+        voice = self.config.get('TTS.voice')
+        inp_index = self.config.get('audio.input_device')
+        out_index = self.config.get('audio.output_device')
+
+
+        self.model_input.delete(0, tk.END)  # Delete all existing text
+        self.model_input.insert(0, model)
+        self.key_input.delete(0, tk.END)  # Delete all existing text
+        self.key_input.insert(0, '12345567889werdghdsasdfgggggghredsddffffffffffffffffffffffffffffffddddddddd')
+
     
+    def set_config(self):
+        self.config.set('AI.model', self.model_input.get())
+
+
+    def set_prompt(self):
+        with open("Core/config/vrchat_bot_prompt.txt", "r") as rfile:
+                with open("Core/config/vrchat_bot_prompt_backup.txt", "w") as wfile:
+                    wfile.write(rfile.read())  
+
+        with open("Core/config/vrchat_bot_prompt.txt", "w") as file:
+            file.write(self.prompt_entry.get(1.0, tk.END))
+                
+
+    def get_prompt(self):
+        pass
+    
+
     def remove_last_message(self):
         pass
 
@@ -174,6 +218,7 @@ culpa qui officia deserunt mollit anim id est laborum."""
     def auto_audio_setup(self):
         pass
 
+
     def add_message(self, message, sender):
         self.chat_log.config(state=tk.NORMAL)
         self.chat_log.insert(tk.INSERT, "\n")
@@ -182,6 +227,9 @@ culpa qui officia deserunt mollit anim id est laborum."""
         self.chat_log.insert(tk.INSERT, message)
         self.chat_log.insert(tk.INSERT, "\n")
         self.chat_log.config(state=tk.DISABLED)
+
+
+
 
 if __name__ == '__main__':
     app = UI()

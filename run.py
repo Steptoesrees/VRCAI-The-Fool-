@@ -50,7 +50,9 @@ def run_main():
 
 
 def main():
+    
     newly_created = ensure_venv()
+    install_requirements()
     if newly_created:
         install_requirements()
     try:
