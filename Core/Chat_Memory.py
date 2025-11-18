@@ -141,10 +141,13 @@ from Config_Manager import Config_Manager
 
 class short_memory():
     def __init__(self, max_history = 30):
-        with open('Core/config/vrchat_bot_prompt.md', 'r') as file:
-            sys_prompt = file.read()
-
         self.config = Config_Manager()
+
+        with open('Core/config/vrchat_bot_prompt.txt', 'r') as file:
+            sys_prompt = file.read()
+        name = self.config.get("AI.name")
+        sys_prompt = sys_prompt.replace("{{name}}", str(name))
+        
         self.memory = [{'role': 'system', 'content': sys_prompt}]
         self.max_history = max_history
 
@@ -180,7 +183,7 @@ class short_memory():
             return
         
         name = self.config.get("AI.name")
-        prompt.replace("{{name}}", name)
+        prompt = prompt.replace("{{name}}", name)
         self.memory[0].update({"content": prompt})
 
 

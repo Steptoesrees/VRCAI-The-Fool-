@@ -1,6 +1,5 @@
 import yaml
 import os
-import keyring
 
 
 class Config_Manager():
@@ -29,11 +28,3 @@ class Config_Manager():
         value[ids[0]] [ids[1]] = new_val
         with open('Core/config/config.yaml', 'w') as file:
             yaml.dump(value, file, default_flow_style=False)
-
-    def get_keyring(self,key_name):
-        return keyring.get_password(self.service_name, key_name)
-        
-    
-    def set_keyring(self, key_name, value):
-        keyring.set_password(self.service_name, key_name, value)
-        return True

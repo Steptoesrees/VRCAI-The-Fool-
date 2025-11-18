@@ -1,19 +1,18 @@
 import requests
 import json
-import dotenv
 import os
 from Config_Manager import Config_Manager
 
-dotenv.load_dotenv()
+config = Config_Manager()
 
 
 
 def call(chat_memory, max_tokens = 300, test = False):
-    model = Config_Manager().get('AI.model')
+    model = config.get('AI.model')
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-            "Authorization": f"Bearer {Config_Manager.get("API.openrouter_key")}",
+            "Authorization": f"Bearer {config.get("API.openrouter_key")}",
         
             
             

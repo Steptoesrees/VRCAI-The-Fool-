@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 import threading
 import sounddevice as sd
+import pyaudio
 
 
 from RealtimeSTT import AudioToTextRecorder
@@ -16,7 +17,9 @@ class UI(tk.Tk):
         super().__init__()
         self.title("The Fool TTS UI")
         self.geometry("900x700")
-        
+
+        self.audio = pyaudio.PyAudio()
+
         self.style = ttk.Style()
         self.styles = self.style.theme_names()
 
@@ -193,19 +196,29 @@ culpa qui officia deserunt mollit anim id est laborum."""
 
 
     def populate_devices(self):
-        devices = sd.query_devices()
-        inp_temp = []
-        out_temp = []
+        self.WASdevices = []
+        for i in range(self.audio.get_device_count()):
+            
+            info = self.audio.get_device_info_by_index(i)
+            print(info['name'], " - ", info['hostApi'])
+            if info['hostApi'] == 1:  # WASAPI only (cleanest)
+                self.WASdevices.append(info)
+        
+        self.MMEdevices = []
+        for i in range(self.audio.get_device_count()):
+            
+            info = self.audio.get_device_info_by_index(i)
+            print(info['name'], " - ", info['hostApi'])
+            if info['hostApi'] == 0:  # WASAPI only (cleanest)
+                self.MMEdevices.append(info)
 
-        self.input_devices = [(int(d['index']), d['name']) for d in devices if d['max_input_channels'] > 0]
-        for idx,name in self.input_devices:
-            if name in inp_temp:
-                continue
-            else:
-                self.input_dropdown['values'] = (f"{str(name)}")
+        self.MMEinput_devices = [(int(d['index']), d['name']) for d in self.MMEdevices if d['maxInputChannels'] > 0]
+        self.input_devices = [(int(d['index']), d['name']) for d in self.WASdevices if d['maxInputChannels'] > 0]
+        self.input_dropdown['values'] = [f"{str(name)[:40]}" for idx, name in self.input_devices]
 
-        self.output_devices = [(int(d['index']), d['name']) for d in devices if d['max_output_channels'] > 0]
-        self.output_dropdown['values'] = [f"{str(name)[:40]}" for idx, name in self.output_devices if len(str(name)) < 40]
+        self.MMEoutput_devices = [(int(d['index']), d['name']) for d in self.MMEdevices if d['maxOutputChannels'] > 0]
+        self.output_devices = [(int(d['index']), d['name']) for d in self.WASdevices if d['maxOutputChannels'] > 0]
+        self.output_dropdown['values'] = [f"{str(name)[:40]}" for idx, name in self.output_devices]
 
 
 
@@ -222,13 +235,25 @@ culpa qui officia deserunt mollit anim id est laborum."""
         for i, name in enumerate(self.styles):
             if name == style:
                 self.style_dropdown.current(i)
+        
 
-        for i, (d_idx, name) in enumerate(self.input_devices):
-            if i == inp_index:
+
+        for MMEidx, MMEname in self.MMEinput_devices:
+            if MMEidx == inp_index:
+                part_inp_name = MMEname
+
+        for MMEidx, MMEname in self.MMEoutput_devices:
+            if MMEidx == out_index:
+                part_out_name = MMEname
+
+
+
+        for i, (WASidx, name) in enumerate(self.input_devices):
+            if part_inp_name in name:
                 self.input_dropdown.current(i)
 
-        for i, (d_idx, name) in enumerate(self.output_devices):
-            if d_idx == out_index:
+        for i, (WASidx, name) in enumerate(self.output_devices):
+            if part_out_name in name:
                 self.output_dropdown.current(i)
         
         self.style.theme_use(style)
@@ -249,13 +274,19 @@ culpa qui officia deserunt mollit anim id est laborum."""
         self.config.set('AI.model', self.model_input.get())
         self.config.set('UI.style', self.style_dropdown.get())
 
-        for i, name in self.input_devices:
-            if name == self.input_dropdown.get():
-                inp_index = i
+        
 
-        for i, name in self.output_devices:
-            if name == self.output_dropdown.get():
-                out_index = i
+
+        for MMEidx, MMEname in self.MMEinput_devices:
+            if MMEname in self.input_dropdown.get():
+                inp_index = MMEidx
+                print(MMEidx, MMEname)
+
+        for MMEidx, MMEname in self.MMEoutput_devices:
+            if MMEname in self.output_dropdown.get():
+                out_index = MMEidx
+                print(MMEidx, MMEname)
+
 
         self.config.set('audio.input_device', inp_index)
         self.config.set('audio.output_device', out_index)
@@ -263,7 +294,6 @@ culpa qui officia deserunt mollit anim id est laborum."""
 
         self.load_config()
         
-
 
 
 
@@ -291,9 +321,6 @@ culpa qui officia deserunt mollit anim id est laborum."""
         
         self.AI_name_entry.delete(0,tk.END)
         self.AI_name_entry.insert(0,self.config.get('AI.name'))
-        
-
-        
 
 
     def load_previous_prompt(self):
@@ -309,8 +336,6 @@ culpa qui officia deserunt mollit anim id est laborum."""
         
         self.AI_name_entry.delete(0,tk.END)
         self.AI_name_entry.insert(0,self.config.get('AI.name'))
-
-
 
 
 
