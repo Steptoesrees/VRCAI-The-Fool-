@@ -3,6 +3,7 @@
 import uuid
 from datetime import datetime
 import json
+from Config_Manager import Config_Manager
 
 # class vector_memory():
 #     def __init__(self, mem_name):
@@ -140,10 +141,10 @@ import json
 
 class short_memory():
     def __init__(self, max_history = 30):
-        
         with open('Core/config/vrchat_bot_prompt.md', 'r') as file:
             sys_prompt = file.read()
 
+        self.config = Config_Manager()
         self.memory = [{'role': 'system', 'content': sys_prompt}]
         self.max_history = max_history
 
@@ -169,6 +170,19 @@ class short_memory():
 
     def inject_memory(self, memory):
         self.memory.insert(len(self.memory)-2,{'role': 'system', 'content': memory})
+
+    def update_sys_prompt(self):
+        try:
+            with open("Core/Log/ChatLog.json", "r") as file:
+                prompt = file.read()
+        except:
+            print("prompt update failed")
+            return
+        
+        name = self.config.get("AI.name")
+        prompt.replace("{{name}}", name)
+        self.memory[0].update({"content": prompt})
+
 
     def _trim_memory(self):
         if len(self.memory) > self.max_history:

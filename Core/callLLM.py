@@ -13,7 +13,7 @@ def call(chat_memory, max_tokens = 300, test = False):
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-            "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
+            "Authorization": f"Bearer {Config_Manager.get("API.openrouter_key")}",
         
             
             

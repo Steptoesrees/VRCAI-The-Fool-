@@ -1,12 +1,17 @@
 AI:
   model: openrouter/sherlock-dash-alpha
+  name: Echo
+API:
+  openrouter_key: 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
 TTS:
   voice: Models//glados_piper_medium.onnx
+UI:
+  style: clam
 audio:
   input_device: 3
   length_scale: 1.0
   noise_scale: 0.0
   noise_w_scale: 0.0
   normalize_audio: false
-  output_device: 19
+  output_device: 12
   volume: 1.0

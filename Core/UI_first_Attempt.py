@@ -18,7 +18,7 @@ class UI(tk.Tk):
         self.geometry("900x700")
         
         self.style = ttk.Style()
-        self.style.theme_use('clam')
+        self.styles = self.style.theme_names()
 
         self.config = Config_Manager()
         self.convoManager = Convo_Manager()
@@ -32,26 +32,30 @@ class UI(tk.Tk):
     def build_ui(self):
 
         self.tabbook = ttk.Notebook(self)
-        self.tabbook.pack(fill='both', expand=True, padx=10, pady=10)
+        self.tabbook.pack(fill='both', expand=True)
+
+        
 
         self.main_frame = ttk.Frame(self.tabbook)
         self.vision_frame = ttk.Frame(self.tabbook)
         self.settings_frame = ttk.Frame(self.tabbook)
-        self.prompt_frame = ttk.Frame(self.tabbook)
+        self.personality_frame = ttk.Frame(self.tabbook)
         self.tabbook.add(self.main_frame, text='Main')
         #self.tabbook.add(self.vision_frame, text='Vision')
         self.tabbook.add(self.settings_frame, text='Settings')
-        self.tabbook.add(self.prompt_frame, text='Personality')
+        self.tabbook.add(self.personality_frame, text='Personality')
         self.build_main_tab()
         self.build_vision_tab()
         self.build_settings_tab()
         self.build_personality_tab()
         self.populate_devices()
+        self.populate_styles()
         self.load_config()
+        self.get_prompt()
       
 
     def build_main_tab(self):
-        self.status_label = ttk.Label(self.main_frame, text="|Idle|", font=('Segoe UI', 16))
+        self.status_label = ttk.Label(self.main_frame, text="Idle", font=('Segoe UI', 16))
         self.status_label.pack(anchor='center', pady=(10, 5), padx=10)
 
         # Chat log frame
@@ -105,12 +109,16 @@ culpa qui officia deserunt mollit anim id est laborum."""
         key_label = ttk.Label(AI_frame, text="Openrouter key", font=('Segoe UI', 10))
         self.key_input = ttk.Entry(AI_frame, font=('Segoe UI', 12), show="*")
 
+
         #draws lables and input boxes
         model_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.model_input.pack(anchor='w', fill='x', pady=(0,5), padx=10)
         
         key_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.key_input.pack(anchor='w', fill='x', pady=(0,10), padx=10)
+
+
+
 
         """TTS SETTINGS"""
         TTS_frame = ttk.LabelFrame(self.settings_frame, text='TTS settings')
@@ -135,44 +143,71 @@ culpa qui officia deserunt mollit anim id est laborum."""
         output_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.output_dropdown.pack(anchor='w', pady=(0,10), padx=10)
 
+        
+
+
+        """UI SETTINGS"""
+        UI_settings_frame = ttk.LabelFrame(self.settings_frame, text='UI settings')
+        UI_settings_frame.pack(fill='x', padx=10, pady=(0,10))
+
+
+        #creates the labels, buttons, input boxes etc
+        style_label = ttk.Label(UI_settings_frame, text="UI Theme", font=('Segoe UI', 10))
+        self.style_dropdown = ttk.Combobox(UI_settings_frame, state='readonly', width=32)
+
+        style_label.pack(anchor='w', pady=(10, 0), padx=10)
+        self.style_dropdown.pack(anchor='w',pady=(0,5), padx=10)
+
+
         confirm_button = ttk.Button(self.settings_frame, text='Confirm', command=self.set_config).pack()
 
-
     def build_personality_tab(self):
-        prompt_frame = ttk.Frame(self.settings_frame)
+        prompt_frame = ttk.Frame(self.personality_frame)
         prompt_frame.pack(fill='both', expand=True, padx=5, pady=5)
 
+
+        AI_name_label = ttk.Label(prompt_frame, text="AI Name", font=('Segoe UI', 10))
+        self.AI_name_entry = ttk.Entry(prompt_frame, font=('Segoe UI', 12))
+
+
+        prompt_label = ttk.Label(prompt_frame, text="Main Prompt", font=('Segoe UI', 10))
         self.prompt_entry = scrolledtext.ScrolledText(
-            self.prompt_frame, 
+            prompt_frame, 
             wrap=tk.WORD, 
             height=10, 
-            font=('Segoe UI', 12)
+            font=('Segoe UI', 12),
+            undo=True
         )
 
-        self.prompt_entry.pack(fill='both', expand=True, padx=5,pady=5)
+        AI_name_label.pack(anchor='w', pady=(10,0), padx=10)
+        self.AI_name_entry.pack(fill='x', padx=10)
+        prompt_label.pack(anchor='w', pady=(10,0), padx=10)
+        self.prompt_entry.pack(fill='both', expand=True, padx=5,pady=(0,10))
 
-        save_button = ttk.Button(self.prompt_frame, text='Confirm', command=self.set_prompt).pack()
+        save_button = ttk.Button(prompt_frame, text='Confirm', command=self.set_prompt).pack(side='left',padx=5,pady=(0,5))
+        save_button = ttk.Button(prompt_frame, text='Load Previous Prompt', command=self.load_previous_prompt).pack(side='right', padx=5,pady=(0,10))
+
+    
+    def populate_styles(self):
+        self.style_dropdown['values'] = [f"{str(name)}"for i, name in enumerate(self.styles)]
 
 
     def populate_devices(self):
         devices = sd.query_devices()
+        inp_temp = []
+        out_temp = []
+
         self.input_devices = [(int(d['index']), d['name']) for d in devices if d['max_input_channels'] > 0]
-        self.input_dropdown['values'] = [f"{idx} - {str(name)[:40]}{'...' if len(str(name)) > 40 else ''}" for idx, name in self.input_devices]
+        for idx,name in self.input_devices:
+            if name in inp_temp:
+                continue
+            else:
+                self.input_dropdown['values'] = (f"{str(name)}")
 
         self.output_devices = [(int(d['index']), d['name']) for d in devices if d['max_output_channels'] > 0]
-        self.output_dropdown['values'] = [f"{idx} - {str(name)[:40]}{'...' if len(str(name)) > 40 else ''}" for idx, name in self.output_devices]
+        self.output_dropdown['values'] = [f"{str(name)[:40]}" for idx, name in self.output_devices if len(str(name)) < 40]
 
 
-    def toggle_listen(self):
-        if self.convoManager.isListening():
-            self.listen_button.config(text='Start Listening')
-            self.status_label.config(text="|Idle|")
-            self.convoManager.stopListening()
-
-        else: 
-            self.listen_button.config(text='Stop Listening')
-            self.status_label.config(text="|Listening|")
-            self.convoManager.startListening()
 
 
     def load_config(self):
@@ -180,16 +215,56 @@ culpa qui officia deserunt mollit anim id est laborum."""
         voice = self.config.get('TTS.voice')
         inp_index = self.config.get('audio.input_device')
         out_index = self.config.get('audio.output_device')
+        style = self.config.get('UI.style')
+        key = self.config.get('API.openrouter_key')
+        
+
+        for i, name in enumerate(self.styles):
+            if name == style:
+                self.style_dropdown.current(i)
+
+        for i, (d_idx, name) in enumerate(self.input_devices):
+            if i == inp_index:
+                self.input_dropdown.current(i)
+
+        for i, (d_idx, name) in enumerate(self.output_devices):
+            if d_idx == out_index:
+                self.output_dropdown.current(i)
+        
+        self.style.theme_use(style)
+        
 
 
         self.model_input.delete(0, tk.END)  # Delete all existing text
         self.model_input.insert(0, model)
         self.key_input.delete(0, tk.END)  # Delete all existing text
-        self.key_input.insert(0, '12345567889werdghdsasdfgggggghredsddffffffffffffffffffffffffffffffddddddddd')
+        self.key_input.insert(0, key)
+        
 
     
     def set_config(self):
+        newkey = self.key_input.get()
+        self.config.set('API.openrouter_key', newkey)
+
         self.config.set('AI.model', self.model_input.get())
+        self.config.set('UI.style', self.style_dropdown.get())
+
+        for i, name in self.input_devices:
+            if name == self.input_dropdown.get():
+                inp_index = i
+
+        for i, name in self.output_devices:
+            if name == self.output_dropdown.get():
+                out_index = i
+
+        self.config.set('audio.input_device', inp_index)
+        self.config.set('audio.output_device', out_index)
+        
+
+        self.load_config()
+        
+
+
 
 
     def set_prompt(self):
@@ -199,24 +274,51 @@ culpa qui officia deserunt mollit anim id est laborum."""
 
         with open("Core/config/vrchat_bot_prompt.txt", "w") as file:
             file.write(self.prompt_entry.get(1.0, tk.END))
+        
+        self.config.set('AI.name', self.AI_name_entry.get())
                 
-
+                
     def get_prompt(self):
-        pass
-    
+        try:
+            with open("Core/config/vrchat_bot_prompt.txt", "r") as file:
+                content = file.read()
+                self.prompt_entry.delete("1.0", tk.END)
+                self.prompt_entry.insert(tk.INSERT, content)
+        except:
+            content = 'Load Failed'                
+            self.prompt_entry.delete("1.0", tk.END)
+            self.prompt_entry.insert(tk.INSERT, content)
+        
+        self.AI_name_entry.delete(0,tk.END)
+        self.AI_name_entry.insert(0,self.config.get('AI.name'))
+        
 
-    def remove_last_message(self):
-        pass
+        
 
 
-    def on_closing(self):
-        self.destroy()
-        exit()
-        close()
+    def load_previous_prompt(self):
+        try:
+            with open("Core/config/vrchat_bot_prompt_backup.txt", "r") as file:
+                content = file.read()
+                self.prompt_entry.delete("1.0", tk.END)
+                self.prompt_entry.insert(tk.INSERT, content)
+        except:
+            content = 'Load Failed'                
+            self.prompt_entry.delete("1.0", tk.END)
+            self.prompt_entry.insert(tk.INSERT, content)
+        
+        self.AI_name_entry.delete(0,tk.END)
+        self.AI_name_entry.insert(0,self.config.get('AI.name'))
+
+
+
+
 
 
     def auto_audio_setup(self):
         pass
+
+
 
 
     def add_message(self, message, sender):
@@ -228,6 +330,30 @@ culpa qui officia deserunt mollit anim id est laborum."""
         self.chat_log.insert(tk.INSERT, "\n")
         self.chat_log.config(state=tk.DISABLED)
 
+
+    def toggle_listen(self):
+        if self.convoManager.isListening():
+            self.listen_button.config(text='Start Listening')
+            self.status_label.config(text="Idle")
+            self.convoManager.stopListening()
+
+        else: 
+            self.listen_button.config(text='Stop Listening')
+            self.status_label.config(text="Listening")
+            self.convoManager.startListening()
+
+
+    def remove_last_message(self):
+        pass
+
+
+
+
+
+    def on_closing(self):
+        self.destroy()
+        exit()
+        close()
 
 
 

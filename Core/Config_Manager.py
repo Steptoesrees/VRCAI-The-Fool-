@@ -1,10 +1,11 @@
 import yaml
 import os
-import dotenv
+import keyring
+
 
 class Config_Manager():
     def __init__(self):
-        self.envclient = dotenv.load_dotenv()
+        self.service_name = "TheFoolVRCAI"
         with open('Core/config/config.yaml', 'r') as file:
             self.config = yaml.safe_load(file)
 
@@ -29,8 +30,10 @@ class Config_Manager():
         with open('Core/config/config.yaml', 'w') as file:
             yaml.dump(value, file, default_flow_style=False)
 
-    def get_env(self, id_path):
-        try:
-            return os.getenv(id_path)
-        except(ValueError, TypeError):
-            return
+    def get_keyring(self,key_name):
+        return keyring.get_password(self.service_name, key_name)
+        
+    
+    def set_keyring(self, key_name, value):
+        keyring.set_password(self.service_name, key_name, value)
+        return True
