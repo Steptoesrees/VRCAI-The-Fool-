@@ -26,6 +26,9 @@ class TTS():
             normalize_audio=self.config.get('audio.normalize_audio'), 
         )
 
+    def update_voice(self, voice):
+        self.voice = PiperVoice.load(voice, use_cuda=True)
+
     def readAloud(self, message):
         self.stream = sd.OutputStream(samplerate=self.voice.config.sample_rate, channels=1, dtype='int16', device=self.config.get('audio.output_device'))
         self.stream.start()

@@ -1,5 +1,5 @@
 # Core runtime
-python-dotenv
+keyring
 PyYAML
 requests
 termcolor
@@ -14,4 +14,5 @@ RealtimeSTT
 piper-tts
 sounddevice
 numpy
+
 

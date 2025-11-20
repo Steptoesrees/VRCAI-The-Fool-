@@ -1,16 +1,18 @@
 import yaml
 import os
-import dotenv
+
 
 class Config_Manager():
     def __init__(self):
-        self.envclient = dotenv.load_dotenv()
+        self.service_name = "TheFoolVRCAI"
         with open('Core/config/config.yaml', 'r') as file:
             self.config = yaml.safe_load(file)
 
 
 
     def get(self, id_path):
+        with open('Core/config/config.yaml', 'r') as file:
+            self.config = yaml.safe_load(file)
         ids = id_path.split(".")
 
         value = self.config
@@ -23,14 +25,10 @@ class Config_Manager():
             return 
         
     def set(self, id_path, new_val):
+        with open('Core/config/config.yaml', 'r') as file:
+            self.config = yaml.safe_load(file)
         ids = id_path.split('.')
         value = self.config 
         value[ids[0]] [ids[1]] = new_val
         with open('Core/config/config.yaml', 'w') as file:
             yaml.dump(value, file, default_flow_style=False)
-
-    def get_env(self, id_path):
-        try:
-            return os.getenv(id_path)
-        except(ValueError, TypeError):
-            return

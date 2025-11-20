@@ -3,6 +3,7 @@
 import uuid
 from datetime import datetime
 import json
+from Config_Manager import Config_Manager
 
 # class vector_memory():
 #     def __init__(self, mem_name):
@@ -139,11 +140,14 @@ import json
 
 
 class short_memory():
-    def __init__(self, max_history = 30):
-        
-        with open('Core/config/vrchat_bot_prompt.md', 'r') as file:
-            sys_prompt = file.read()
+    def __init__(self, max_history = 300):
+        self.config = Config_Manager()
 
+        with open('Core/config/vrchat_bot_prompt.txt', 'r') as file:
+            sys_prompt = file.read()
+        name = self.config.get("AI.name")
+        sys_prompt = sys_prompt.replace("{{name}}", str(name))
+        
         self.memory = [{'role': 'system', 'content': sys_prompt}]
         self.max_history = max_history
 
@@ -169,6 +173,24 @@ class short_memory():
 
     def inject_memory(self, memory):
         self.memory.insert(len(self.memory)-2,{'role': 'system', 'content': memory})
+
+    def update_sys_prompt(self):
+        try:
+            with open("Core/config/vrchat_bot_prompt.txt", "r") as file:
+                prompt = file.read()
+        except:
+            print("prompt update failed")
+            return
+        
+        name = self.config.get("AI.name")
+        prompt = prompt.replace("{{name}}", name)
+        self.memory[0].update({"content": prompt})
+
+    def remove_last_message(self):
+        if len(self.memory) > 1:
+            for counter in range(2):
+                self.memory.pop()
+
 
     def _trim_memory(self):
         if len(self.memory) > self.max_history:

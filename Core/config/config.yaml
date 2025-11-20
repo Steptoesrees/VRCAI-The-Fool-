@@ -1,10 +1,17 @@
+AI:
+  model: x-ai/grok-4.1-fast:nitro
+  name: Echo
+API:
+  openrouter_key: YOUR-OPENROUTER-KEY-HERE
 TTS:
   voice: Models//glados_piper_medium.onnx
+UI:
+  style: clam
 audio:
   input_device: 3
-  length_scale: 1
-  noise_scale: 0
-  noise_w_scale: 0
+  length_scale: 1.0
+  noise_scale: 0.0
+  noise_w_scale: 0.0
   normalize_audio: false
-  output_device: 20
-  volume: 1
+  output_device: 17
+  volume: 1.0
