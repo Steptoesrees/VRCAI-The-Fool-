@@ -145,10 +145,10 @@ class UI(tk.Tk):
         #creates the labels, buttons, input boxes etc
         auto_button = ttk.Button(audio_frame, text='Auto Device Setup (temporary)', command=self.auto_audio_setup)
         
-        input_label = ttk.Label(audio_frame, text="Input Devices", font=('Segoe UI', 10))
+        input_label = ttk.Label(audio_frame, text="Input Device", font=('Segoe UI', 10))
         self.input_dropdown = ttk.Combobox(audio_frame, state='readonly', width=32)
 
-        output_label = ttk.Label(audio_frame, text="Output Devices", font=('Segoe UI', 10))
+        output_label = ttk.Label(audio_frame, text="Output Device", font=('Segoe UI', 10))
         self.output_dropdown = ttk.Combobox(audio_frame, state='readonly', width=32)
 
         #draws elements
