@@ -140,7 +140,7 @@ from Config_Manager import Config_Manager
 
 
 class short_memory():
-    def __init__(self, max_history = 30):
+    def __init__(self, max_history = 300):
         self.config = Config_Manager()
 
         with open('Core/config/vrchat_bot_prompt.txt', 'r') as file:
@@ -176,7 +176,7 @@ class short_memory():
 
     def update_sys_prompt(self):
         try:
-            with open("Core/Log/ChatLog.json", "r") as file:
+            with open("Core/config/vrchat_bot_prompt.txt", "r") as file:
                 prompt = file.read()
         except:
             print("prompt update failed")
@@ -185,6 +185,11 @@ class short_memory():
         name = self.config.get("AI.name")
         prompt = prompt.replace("{{name}}", name)
         self.memory[0].update({"content": prompt})
+
+    def remove_last_message(self):
+        if len(self.memory) > 1:
+            for counter in range(2):
+                self.memory.pop()
 
 
     def _trim_memory(self):

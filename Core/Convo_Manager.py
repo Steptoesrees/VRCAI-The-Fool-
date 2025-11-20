@@ -8,6 +8,9 @@ class Convo_Manager():
         self._is_listening = False
         self._interrupt_words = ["shut up", "wait", "listen to me", "stop"]
 
+
+
+
     def isListening(self):
         return self._is_listening
     
@@ -17,6 +20,7 @@ class Convo_Manager():
     def startListening(self):
         self._is_listening = True
 
+
     def isTalking(self):
         return self._is_talking
     
@@ -25,7 +29,8 @@ class Convo_Manager():
     
     def startTalking(self):
         self._is_talking = True
-    
+
+
     def isConvo(self):
         return self._is_convo
     
@@ -34,6 +39,7 @@ class Convo_Manager():
     
     def startConvo(self):
         self._is_convo = True
+
 
     def talkingInterrupt(self, text):
         for word in self._interrupt_words:

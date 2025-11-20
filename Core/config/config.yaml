@@ -1,14 +1,14 @@
 AI:
-  model: openrouter/sherlock-dash-alpha
+  model: x-ai/grok-4.1-fast:nitro
   name: Echo
 API:
-  openrouter_key: 'your key here'
+  openrouter_key: YOUR-OPENROUTER-KEY-HERE
 TTS:
   voice: Models//glados_piper_medium.onnx
 UI:
-  style: alt
+  style: clam
 audio:
-  input_device: 12
+  input_device: 3
   length_scale: 1.0
   noise_scale: 0.0
   noise_w_scale: 0.0

@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VENV_DIR = ROOT / ".venv"
+VENV_DIR = ROOT / ".venvpc"
 if os.name == "nt":
     VENV_PY = VENV_DIR / "Scripts" / "python.exe"
 else:
@@ -45,20 +45,20 @@ def install_requirements():
 
 
 def run_main():
-    print("[run.py] Starting application with python Core/Main.py")
-    run([str(VENV_PY), "Core/Main.py"])
+    print("[run.py] Starting application with python")
+    run([str(VENV_PY), "Core/UI.py"])
 
 
 def main():
     
     newly_created = ensure_venv()
-    install_requirements()
     if newly_created:
         install_requirements()
     try:
         run_main()
     except:
         install_requirements()
+        run_main()
 
 if __name__ == "__main__":
     main()

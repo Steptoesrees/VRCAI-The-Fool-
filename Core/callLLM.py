@@ -20,17 +20,22 @@ def call(chat_memory, max_tokens = 300, test = False):
         data=json.dumps({
             "model": model, 
             "messages": chat_memory,
-            "max_tokens": max_tokens
+            "max_tokens": max_tokens,
+            "extra_body": {"reasoning": {"enabled": False}}
         }))
     
     response = response.json()
 
     if test:
         print(response)
-        print("")
+        try:
+            response["choices"][0]["message"]["content"]
+        except:
+            print(f"Error: {response['error']['message']} - Code: {response['error']['code']}")
 
-    
-    return response["choices"][0]["message"]["content"]
-
+    try:
+        return response["choices"][0]["message"]["content"]
+    except:
+        return False, f"Error: {response['error']['message']} - Code: {response['error']['code']}"
 if __name__ == '__main__':
-    print(call([{"role": "system", "content": "you are GlaD0s from the video game Portal"}, {"role": "user", "content": "hello"}]))
+    print(call([{"role": "system", "content": "you are GlaD0s from the video game Portal"}, {"role": "user", "content": "hello"}], test=True))
