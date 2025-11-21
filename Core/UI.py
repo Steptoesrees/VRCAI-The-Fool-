@@ -422,6 +422,7 @@ class UI(tk.Tk):
                 self.chat_log.insert(tk.INSERT, "\n")
                 self.chat_log.insert(tk.INSERT, "\n")
         self.chat_log.config(state=tk.DISABLED)
+        self.chat_log.see("end")
 
     def add_message(self, message, sender):
         self.chat_log.config(state=tk.NORMAL)

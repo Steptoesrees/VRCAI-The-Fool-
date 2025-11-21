@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VENV_DIR = ROOT / ".venvpc"
+VENV_DIR = ROOT / ".venv"
 if os.name == "nt":
     VENV_PY = VENV_DIR / "Scripts" / "python.exe"
 else:

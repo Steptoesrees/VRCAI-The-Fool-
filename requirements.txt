@@ -9,7 +9,6 @@ chromaDB
 
 # Audio / STT (RealtimeSTT dependency)
 RealtimeSTT
-
 # Text-to-Speech (Piper)
 piper-tts
 sounddevice
