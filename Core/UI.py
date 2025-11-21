@@ -488,10 +488,3 @@ class UI(tk.Tk):
 if __name__ == '__main__':
     app = UI()
     app.mainloop()
-
-
-
-#ISSUES
-#settings not updating main
-#crollable text not updating properly (messes up when it starts scrolling)
-#if an entry in config is empty, config.get breaks
