@@ -168,8 +168,14 @@ class UI(tk.Tk):
         model_label = ttk.Label(TTS_frame, text="Model", font=('Segoe UI', 10))
         self.voice_dropdown = ttk.Combobox(TTS_frame, state='readonly', width=32)
 
+        self.chatbox = tk.BooleanVar()
+        self.chatbox_checkbox = ttk.Checkbutton(TTS_frame, text='Send response to chatbox', variable=self.chatbox, onvalue=True, offvalue=False)
+
         model_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.voice_dropdown.pack(anchor='w',pady=(0,5), padx=10)
+        self.chatbox_checkbox.pack(anchor='w', pady=(0,5), padx=10)
+
+        
 
         """UI SETTINGS"""
         UI_settings_frame = ttk.LabelFrame(self.settings_frame, text='UI settings')
@@ -182,6 +188,8 @@ class UI(tk.Tk):
 
         style_label.pack(anchor='w', pady=(10, 0), padx=10)
         self.style_dropdown.pack(anchor='w',pady=(0,5), padx=10)
+
+
 
 
     
@@ -204,7 +212,7 @@ class UI(tk.Tk):
             prompt_frame, 
             wrap=tk.WORD, 
             height=10, 
-            font=('Segoe UI', 12),
+            font=('Segoe UI', 10),
             undo=True
         )
 
@@ -255,6 +263,7 @@ class UI(tk.Tk):
 
 
     def load_config(self):
+        self.chatbox.set(self.config.get('TTS.chatbox'))
         model = self.config.get('AI.model')
         voice = self.config.get('TTS.voice')[8:]
         inp_index = self.config.get('audio.input_device')
@@ -305,7 +314,7 @@ class UI(tk.Tk):
     def set_config(self):
         newkey = self.key_input.get()
         self.config.set('API.openrouter_key', newkey)
-
+        self.config.set('TTS.chatbox', self.chatbox.get())
         self.config.set('AI.model', self.model_input.get())
         self.config.set('UI.style', self.style_dropdown.get())
         self.config.set('TTS.voice', ("Models//" + self.voice_dropdown.get()))

@@ -19,9 +19,10 @@ def call(chat_memory, max_tokens = 300, test = False):
         },
         data=json.dumps({
             "model": model, 
+            'provider': {'sort': 'latency'},
             "messages": chat_memory,
             "max_tokens": max_tokens,
-            "extra_body": {"reasoning": {"enabled": False}}
+            "reasoning": {"enabled": False}
         }))
     
     response = response.json()

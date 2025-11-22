@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from time import sleep
 
 ROOT = Path(__file__).resolve().parent
 VENV_DIR = ROOT / ".venv"
@@ -57,8 +58,12 @@ def main():
     try:
         run_main()
     except:
-        install_requirements()
-        run_main()
+        try:
+            sleep(3)
+            run_main()
+        except:
+            install_requirements()
+            run_main()
 
 if __name__ == "__main__":
     main()

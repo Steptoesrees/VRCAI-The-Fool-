@@ -40,7 +40,7 @@ class TTS():
         self.stream.start()
         
         for chunk in self.voice.synthesize(message):
-            if self.convo.isTalking():
+            if self.convo.isResponding():
                 int_data = np.frombuffer(chunk.audio_int16_bytes, dtype=np.int16)
                 self.stream.write(int_data)
             else:

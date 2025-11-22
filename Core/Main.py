@@ -5,13 +5,15 @@ from Config_Manager import Config_Manager
 from Chat_Memory import short_memory
 from Convo_Manager import Convo_Manager
 from termcolor import colored as coloured
-
+from OSC import OSCsender
+import threading
 
 
 
 class main():
     def __init__(self, recorder, convo, UI, memory, callback=None):
         self.UI = UI
+        self.osc = OSCsender()
         self.config = Config_Manager()
         self.convo = convo
         self.input_device = self.config.get('audio.input_device')
@@ -42,14 +44,11 @@ class main():
         if self.convo.isListening():
         # QOL PRINTS INPUT TO SCREEN   
             
-            print(coloured(f"Is Talking Toggle: {self.convo.isTalking()}", 'cyan'))
-            print(coloured('='*30,'magenta'))
-            print(coloured(text,'green'))
-            print(coloured('='*30,'magenta'))
+            print(coloured(f"Is Responding Toggle: {self.convo.isResponding()}", 'cyan'))
             
-            if not self.convo.isTalking():
+            if not self.convo.isResponding():
                 
-                self.convo.startTalking()
+                self.convo.startResponding()
                 self.memory.add_user_message(text)
                 self.messages = self.memory.memory
                 
@@ -58,42 +57,45 @@ class main():
                     self.callback()
 
                 self.UI.set_thinking(True)
+
+                if self.config.get('TTS.chatbox'): #if toggle to send messages to the chatbox in game, call function to do so
+                    self.osc.sendChat('Thinking') #
+
                 ai_response = LLM.call(self.messages)
                 
                 if ai_response[0] != False:
                     self.memory.add_ai_message(ai_response)
                     speech = self.clean_text(ai_response)
-
-
-                    # QOL PRINTS AI RESPONSE TO SCREEN
-                    print("\n")
-                    print(coloured('='*30,'magenta'))
-                    print(coloured(speech,'red'))
-                    print(coloured('='*30,'magenta'))
-
-                    # QOL PRINTS WHEN TTS STarts
-                    print('\n')
-                    print(coloured('tts start','green'))
                     
                     if self.callback:
                         self.callback()
 
                     self.UI.set_talking(True)
+                    self.osc.sendChat('')
 
-                    self.TTS.readAloud(speech)
+                    if self.config.get('TTS.chatbox'):
+                        speechthread = threading.Thread(target=self.TTS.readAloud, args=(speech,))
+                        chatthread = threading.Thread(target=self.osc.sendResponse, args=(speech,))
+
+                        speechthread.start()
+                        chatthread.start()
+
+                        speechthread.join()
+                        chatthread.join()
+                        
+                    else:
+                        self.TTS.readAloud(speech)
                     
                     
                     # QOL PRINTS WHEN TTS STOPS
-                    print('\n')
-                    print(coloured('tts end','green'))
                 else:
                     self.UI.add_message(ai_response[1], 'system')
                 
                 self.UI.set_talking(False)
-                self.convo.stopTalking()
+                self.convo.stopResponding()
 
             else:
-                if self.convo.talkingInterrupt(text):
+                if self.convo.respondingInterrupt(text):
                     print(coloured('INTERRUPT TRIGGERED','yellow'))
                     return
                 

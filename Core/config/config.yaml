@@ -2,13 +2,14 @@ AI:
   model: x-ai/grok-4.1-fast:nitro
   name: Echo
 API:
-  openrouter_key: YOUR_OPENROUTER_KEY_HERE
+  openrouter_key: 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
 TTS:
+  chatbox: false
   voice: Models//glados_piper_medium.onnx
 UI:
-  style: clam
+  style: default
 audio:
-  input_device: 12
+  input_device: 2
   length_scale: 1.0
   noise_scale: 0.0
   noise_w_scale: 0.0

@@ -1,9 +1,7 @@
 
-
-
 class Convo_Manager():
     def __init__(self):
-        self._is_talking = False
+        self._is_responding = False
         self._is_convo = False
         self._is_listening = False
         self._interrupt_words = ["shut up", "wait", "listen to me", "stop"]
@@ -21,14 +19,14 @@ class Convo_Manager():
         self._is_listening = True
 
 
-    def isTalking(self):
-        return self._is_talking
+    def isResponding(self):
+        return self._is_responding
     
-    def stopTalking(self):
-        self._is_talking = False
+    def stopResponding(self):
+        self._is_responding = False
     
-    def startTalking(self):
-        self._is_talking = True
+    def startResponding(self):
+        self._is_responding = True
 
 
     def isConvo(self):
@@ -41,10 +39,10 @@ class Convo_Manager():
         self._is_convo = True
 
 
-    def talkingInterrupt(self, text):
+    def respondingInterrupt(self, text):
         for word in self._interrupt_words:
             if word in text.lower():
-                self.stopTalking()
+                self.stopResponding()
                 return True
         return False
     
